@@ -5,7 +5,7 @@
 int main() {
 	locale::global(locale(""));
 	
-	FileParser* f = new FileParser("C:/Users/Nicolas/Desktop/CSP/E2-G7.txt");
+	FileParser* f = new FileParser("C:/Users/Nicolas/Desktop/CSP/E2-G6.txt");
 	CSP m = f->generate();
 
 	/*m.displayDebug();
@@ -13,7 +13,8 @@ int main() {
 		m.domainReduction();
 	m.displayDebug();*/
 
-    map<int, int>* result = m.solve();
+	m.computeVarConstraints();
+    map<int, int>* result = m.solve2();
     cout << "Nombre de variables dans le resultat: " << result->size() << endl;
 
     for(map<int, int>::const_iterator it = result->begin(); it != result->end(); ++it )

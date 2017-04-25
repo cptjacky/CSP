@@ -87,51 +87,64 @@ int CSP::isValid(map<int, int> &affectation) {
     return (!nValid ? -1 : nValid);
 }
 
-vector<vector<int> > CSP::domainReduction(map<int, int>* af) {
-	vector<vector<int> > tempvars;
+vector<vector<int> > CSP::domainReduction(vector<vector<int> > &doms, int x, int value) {
+
+	for (int i = 0; i < varConstraints[x].size(); i++) {
+		int opl = varConstraints[x][i][1], opr = varConstraints[x][i][2];
+
+		for (int l = 0; l < doms[opl].size(); l++) {
+			bool possible = false;
+			for (int r = 0; r < doms[opr].size(); r++) {
+				switch (varConstraints[x][i][0]) {
+				case 4:
+					possible = doms[opl][l] < doms[opr][r] || possible;
+					break;
+				case 6:
+					possible = doms[opl][l] > doms[opr][r] || possible;
+					break;
+				}
+			}
+			if (!possible) doms[opl].erase(doms[opl].begin() + l);
+		}
+
+		for (int r = 0; r < doms[opr].size(); r++) {
+			bool possible = false;
+			for (int l = 0; l < doms[opl].size(); l++) {
+				switch (varConstraints[x][i][0]) {
+				case 4:
+					possible = doms[opl][l] < doms[opr][r] || possible;
+					break;
+				case 6:
+					possible = doms[opl][l] > doms[opr][r] || possible;
+					break;
+				}
+			}
+			if (!possible) doms[opr].erase(doms[opr].begin() + r);
+		}
+	}
+
 	for (int i = 0; i < nbVars; i++) {
-		if (af->count(i) > 0) tempvars.push_back(vector<int>(1, (*af)[i]));
-		else tempvars.push_back(vars[i]);
+		if (doms[i].size() == 0) doms = vector<vector<int> >(0);
 	}
 
-	for (int i = 0; i < constraints.size(); i++) {
-		int opl = constraints[i][1], opr = constraints[i][2];
+	return doms;
+}
 
-		for (int l = 0; l < tempvars[opl].size(); l++) {
-			bool possible = false;
-			for (int r = 0; r < tempvars[opr].size(); r++) {
-				switch (constraints[i][0]) {
-				case 4:
-					possible = tempvars[opl][l] < tempvars[opr][r] || possible;
-					break;
-				case 6:
-					possible = tempvars[opl][l] > tempvars[opr][r] || possible;
-					break;
+void CSP::computeVarConstraints() {
+	for (int v = 0; v < nbVars; v++) {
+		for (int i = 0; i < nbConstraints; i++) {
+			if (constraints[i][0] == 7 || constraints[i][0] == 10) {
+				for (int t = 2; t < constraints[i].size(); t++) {
+					if (constraints[i][t] == v) varConstraints[v].push_back(constraints[i]);
 				}
 			}
-			if (!possible) tempvars[opl].erase(tempvars[opl].begin() + l);
-		}
-
-		for (int r = 0; r < tempvars[opr].size(); r++) {
-			bool possible = false;
-			for (int l = 0; l < tempvars[opl].size(); l++) {
-				switch (constraints[i][0]) {
-				case 4:
-					possible = tempvars[opl][l] < tempvars[opr][r] || possible;
-					break;
-				case 6:
-					possible = tempvars[opl][l] > tempvars[opr][r] || possible;
-					break;
+			else {
+				for (int t = 1; t < constraints[i].size(); t++) {
+					if (constraints[i][t] == v) varConstraints[v].push_back(constraints[i]);
 				}
 			}
-			if (!possible) tempvars[opr].erase(tempvars[opr].begin() + r);
 		}
 	}
-
-	for (int i = 0; i < nbVars; i++)
-		if (tempvars[i].size() == 0) return vector<vector<int> >(nbVars);
-
-	return tempvars;
 }
 
 map<int, int>* CSP::solve() {
@@ -152,8 +165,6 @@ map<int, int>* CSP::solve() {
     map<int, int>* current;
 
     while (pile.size()) {
-		/*current = pile[0];
-		pile.erase(pile.begin());*/
 		current = pile[pile.size() - 1];
 		pile.erase(pile.begin() + pile.size() - 1);
 
@@ -175,42 +186,41 @@ map<int, int>* CSP::solve() {
 }
 
 map<int, int>* CSP::solve2() {
-	vector<int> order;
+
 	// This here until further improvements;
-	/*order.push_back(4);
-	order.push_back(5);
-	order.push_back(20);
-	order.push_back(43);
-	for (int i = 0; i < nbVars; i++)
-		if (i != 4 && i!= 5 && i != 20 && i!= 43) order.push_back(i);*/
+	vector<int> order;
 	for (int i = 0; i < nbVars; i++)
 		order.push_back(i);
 
-	vector<map<int, int>* > pile;
-	pile.push_back(new map<int, int>);
+	vector<Node* > pile;
+	pile.push_back(new Node(vars));
 
-	map<int, int>* current;
+	Node* current;
 
 	while (pile.size()) {
-		/*current = pile[0];
-		pile.erase(pile.begin());*/
 		current = pile[pile.size() -1];
 		pile.erase(pile.begin() + pile.size() - 1);
 
-		vector<vector<int> > tempvars = domainReduction(current);
-
-		for (int i = 0; i < tempvars[order[current->size()]].size(); i++)
+		for (int i = 0; i < current->domains[order[current->assigned->size()]].size(); i++)
 		{
-			map<int, int>* t = new map<int, int>(*current);
-			(*t)[order[current->size()]] = tempvars[order[current->size()]][i];
+			Node* t = new Node(current);
 
-			int r = isValid(*t);
+			int var = order[current->assigned->size()];
+			int value = current->domains[order[current->assigned->size()]][i];
 
-			if (r > 0) cout << r << endl;
+			(*t->assigned)[var] = value;
 
-			if (r == nbConstraints) return t;
-			if (r != 0) pile.push_back(t);
-			if (r == 0) delete t;
+			t->domains = domainReduction(t->domains, var, value);
+
+			// cout << t->domains.size() << endl;
+
+			if (t->assigned->size() == nbVars)
+				return t->assigned;
+			else if (t->domains.size() == 0)
+				delete t;
+			else
+				pile.push_back(t);
+
 		}
 		delete current;
 	}
@@ -225,4 +235,19 @@ void CSP::displayDebug() {
 			cout << vars[i][y] << " ";
 		}
 	}
+}
+
+
+Node::Node(vector<vector<int> > p) {
+	assigned = new map<int, int>;
+	domains = p;
+}
+
+Node::Node(Node* n) {
+	assigned = new map<int, int>(*n->assigned);
+	domains = vector<vector<int> >(n->domains);
+}
+
+Node::~Node() {
+	delete assigned;
 }
