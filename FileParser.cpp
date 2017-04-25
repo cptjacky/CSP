@@ -10,7 +10,7 @@ const vector<int> FileParser::split(const string & input)
 
 	vector<int> output;
 	while (getline(ss, token, ' '))
-		output.push_back(atoi(token.c_str()));
+		output.push_back(stoi(token));
 
 	return output;
 }
@@ -23,7 +23,7 @@ FileParser::FileParser(string path)
 	if (infile.is_open())
 		infile.close();
 
-	infile.open(path.c_str());
+	infile.open(path);
 
 	if (!infile.good()) {
 		cout << "[ERREUR] Impossible d'ouvrir le fichier de graphe! (" << path << ")" << endl;
@@ -63,7 +63,7 @@ CSP& FileParser::generate()
 	{
 		if (i == 0) {
 			// Line 1, nombre de variables;
-			nv = atoi(line.c_str());
+			nv = stoi(line);
 			cout << "[INFO] Nombre de variables trouvé: " << nv << endl;
 			i++;
 
@@ -79,10 +79,27 @@ CSP& FileParser::generate()
 
 			i++;
 		}
-		else if (atoi(line.c_str()) != -1) {
+		else if (stoi(line) != -1) {
 			// On remplit le tableau des contraintes;
 			tkk = split(line);
 			cout << "[INFO] Contrainte " << tkk[0] << " trouvée." << endl;
+
+			if (tkk[0] == 7 || tkk[0] == 10)
+				for (int t = 2; t < tkk.size(); t++)
+					tkk[t]--;
+			else if (tkk[0] == 8)
+				for (int t = 1; t < tkk.size(); t++)
+					for (int p = t + 1; t < tkk.size(); t++) {
+						vector<int> temp;
+						temp.push_back(2);
+						temp.push_back(tkk[t] - 1);
+						temp.push_back(tkk[p] - 1);
+						gg->constraints.push_back(temp);
+					}
+			else
+				for (int t = 1; t < tkk.size(); t++)
+					tkk[t]--;
+
 			gg->constraints.push_back(tkk);
 
 			i++;

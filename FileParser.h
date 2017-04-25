@@ -1,12 +1,4 @@
-#include <sstream>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-
 #include "CSP.h"
-
-using namespace std;
 
 class FileParser {
 
