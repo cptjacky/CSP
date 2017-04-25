@@ -1,3 +1,0 @@
-class Var {
-    int label;
-};
