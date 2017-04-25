@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "PSC.h"
+#include "CSP.h"
 
 using namespace std;
 
@@ -18,5 +18,5 @@ public:
 	FileParser(string path);
 	~FileParser();
 
-	PSC& generate();
+	CSP& generate();
 };

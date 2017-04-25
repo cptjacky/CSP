@@ -1,6 +1,4 @@
 #include "FileParser.h"
-
-
 /*
 Prends une ligne comme entrée, et la divise en utilisant le caractère espace comme délimiteur.
 Ex: Transforme "14 5 3" en un vector : [14, 5, 3].
@@ -12,7 +10,7 @@ const vector<int> FileParser::split(const string & input)
 
 	vector<int> output;
 	while (getline(ss, token, ' '))
-		output.push_back(stoi(token));
+		output.push_back(atoi(token.c_str()));
 
 	return output;
 }
@@ -25,7 +23,7 @@ FileParser::FileParser(string path)
 	if (infile.is_open())
 		infile.close();
 
-	infile.open(path);
+	infile.open(path.c_str());
 
 	if (!infile.good()) {
 		cout << "[ERREUR] Impossible d'ouvrir le fichier de graphe! (" << path << ")" << endl;
@@ -49,7 +47,7 @@ FileParser::~FileParser()
 /*
 Génère l'objet PSC;
 */
-PSC& FileParser::generate()
+CSP& FileParser::generate()
 {
 	string line;
 
@@ -59,35 +57,38 @@ PSC& FileParser::generate()
 
 	vector<int> sommets;
 
-	PSC* gg = new PSC();
+	CSP* gg = new CSP();
 
 	while (getline(infile, line))
 	{
 		if (i == 0) {
 			// Line 1, nombre de variables;
-			nv = stoi(line);
+			nv = atoi(line.c_str());
 			cout << "[INFO] Nombre de variables trouvé: " << nv << endl;
 			i++;
 
-			gg->nbVar = nv;
+			gg->nbVars = nv;
 		}
 		else if (i > 0 && i < nv + 1) {
 			// On remplit le tableau des domaines;
 			tkk = split(line);
 			cout << "[INFO] Domaine de la variable x" << tkk[0] << " trouvé." << endl;
 			tkk.erase(tkk.begin());
-			gg->domVars.push_back(tkk);
+			tkk.erase(tkk.begin());
+			gg->vars.push_back(tkk);
 
 			i++;
 		}
-		else if (stoi(line) != -1) {
+		else if (atoi(line.c_str()) != -1) {
 			// On remplit le tableau des contraintes;
 			tkk = split(line);
 			cout << "[INFO] Contrainte " << tkk[0] << " trouvée." << endl;
-			gg->restrictions.push_back(tkk);
+			gg->constraints.push_back(tkk);
 
 			i++;
 		}
 	}
+	gg->nbConstraints = gg->constraints.size();
+
 	return *gg;
 }
