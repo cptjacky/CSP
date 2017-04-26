@@ -1,4 +1,4 @@
-#include "CSP.h"
+#include "E2-CSP.h"
 
 /* Cette fonction teste si toute les variables de v sont bien affectées. */
 bool CSP::isIn(map<int, int> &affectation, vector<int> &v) {
