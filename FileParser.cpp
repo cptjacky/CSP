@@ -84,6 +84,7 @@ CSP& FileParser::generate()
 			tkk = split(line);
 			cout << "[INFO] Contrainte " << tkk[0] << " trouvée." << endl;
 
+			/* Nota: nos variables dans le code commencent à 0, mais à 1 dans les fichiers, on doit donc bien faire attention et modifier les chiffres lus;*/
 			if (tkk[0] == 7 || tkk[0] == 10)
 				for (int t = 2; t < tkk.size(); t++)
 					tkk[t]--;
