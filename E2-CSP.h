@@ -14,11 +14,11 @@ const string rInfo[] = { "=", "!=", "<=", "<", ">=", ">", "Sum = value", "??", "
 
 class CSP {
 public:
-    int nbVars;
-    int nbConstraints;
+	int nbVars;
+	int nbConstraints;
 
-    vector<vector<int> > vars;
-    vector<vector<int> > constraints;
+	vector<vector<int> > vars;
+	vector<vector<int> > constraints;
 	map<int, vector<vector<int> >> varConstraints;
 
 	int totalNodes;
@@ -28,12 +28,12 @@ public:
 
 	bool sortOrder(int x, int y);
 	bool isIn(map<int, int> &affectation, vector<int> &v);
-    int isValid(map<int, int> &affectation);
+	int isValid(map<int, int> &affectation);
 	vector<vector<int> >& domainReduction(vector<vector<int> > &doms, int x, int value);
 
 	void computeVarConstraints();
 
-    map<int, int>* solve();
+	map<int, int>* solve();
 	map<int, int>* solve2();
 
 	void displayDebug();
@@ -47,6 +47,6 @@ public:
 
 	Node(vector<vector<int> > p);
 	Node(Node* n);
-	
+
 	~Node();
 };

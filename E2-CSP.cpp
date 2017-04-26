@@ -2,92 +2,92 @@
 
 /* Cette fonction teste si toute les variables de v sont bien affectées. */
 bool CSP::isIn(map<int, int> &affectation, vector<int> &v) {
-    for (int i = 0; i < v.size(); i++) {
-        if (!affectation.count(v[i])) return false;
-    }
-    return true;
+	for (int i = 0; i < v.size(); i++) {
+		if (!affectation.count(v[i])) return false;
+	}
+	return true;
 }
 
 /* Cette fonction teste toute les contraintes possible de tester avec les variables actuellement affectée, et retourne le nombre de tests effectués. (0 = Au moins un test faux!; -1 = Aucun test ne peut être effectué avec les variables assignées.*/
 int CSP::isValid(map<int, int> &affectation) {
-    bool valid = true;
-    int nValid = 0;
+	bool valid = true;
+	int nValid = 0;
 
 	/* On parcoure toute les contraintes; */
-    for (int i = 0; i < constraints.size(); i++) {
-        switch(constraints[i][0]) { 
-        case 1:
-            if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                valid = (affectation[constraints[i][1]] == affectation[constraints[i][2]]) && valid;
-                nValid += valid;
-            }
+	for (int i = 0; i < constraints.size(); i++) {
+		switch (constraints[i][0]) {
+		case 1:
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				valid = (affectation[constraints[i][1]] == affectation[constraints[i][2]]) && valid;
+				nValid += valid;
+			}
 			break;
-        case 2:
-            if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                valid = (affectation[constraints[i][1]] != affectation[constraints[i][2]]) && valid;
-			    nValid += valid;
-            }
+		case 2:
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				valid = (affectation[constraints[i][1]] != affectation[constraints[i][2]]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 3:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                valid = (affectation[constraints[i][1]] <= affectation[constraints[i][2]]) && valid;
-			    nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				valid = (affectation[constraints[i][1]] <= affectation[constraints[i][2]]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 4:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                valid = (affectation[constraints[i][1]] < affectation[constraints[i][2]]) && valid;
-			    nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				valid = (affectation[constraints[i][1]] < affectation[constraints[i][2]]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 5:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                valid = (affectation[constraints[i][1]] >= affectation[constraints[i][2]]) && valid;
-			    nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				valid = (affectation[constraints[i][1]] >= affectation[constraints[i][2]]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 6:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                valid = (affectation[constraints[i][1]] > affectation[constraints[i][2]]) && valid;
-			    nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				valid = (affectation[constraints[i][1]] > affectation[constraints[i][2]]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 7:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 2, constraints[i].end()))) {
-                int sum = 0;
-                for (int p = 2; p < constraints[i].size(); p++)
-                    sum += affectation[constraints[i][p]];
-                valid = (sum == constraints[i][1]) && valid;
-			    nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 2, constraints[i].end()))) {
+				int sum = 0;
+				for (int p = 2; p < constraints[i].size(); p++)
+					sum += affectation[constraints[i][p]];
+				valid = (sum == constraints[i][1]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 8:
-            valid = valid;
-            // La logique du 8 est implémentée à la lecture du fichier: séparation en contraintes binaires;
+			valid = valid;
+			// La logique du 8 est implémentée à la lecture du fichier: séparation en contraintes binaires;
 			break;
 		case 9:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
-                int sum = 0;
-                for (int p = 2; p < constraints[i].size(); p++)
-                    sum += affectation[constraints[i][p]];
-                valid = (sum == affectation[constraints[i][1]]) && valid;
-                nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 1, constraints[i].end()))) {
+				int sum = 0;
+				for (int p = 2; p < constraints[i].size(); p++)
+					sum += affectation[constraints[i][p]];
+				valid = (sum == affectation[constraints[i][1]]) && valid;
+				nValid += valid;
+			}
 			break;
 		case 10:
-		    if (isIn(affectation, vector<int>(constraints[i].begin() + 2, constraints[i].end()))) {
-                int sum = 0;
-                for (int p = 2; p < constraints[i].size(); p++)
-                    sum += affectation[constraints[i][p]];
-                valid = (sum < constraints[i][1]) && valid;
-                nValid += valid;
-            }
+			if (isIn(affectation, vector<int>(constraints[i].begin() + 2, constraints[i].end()))) {
+				int sum = 0;
+				for (int p = 2; p < constraints[i].size(); p++)
+					sum += affectation[constraints[i][p]];
+				valid = (sum < constraints[i][1]) && valid;
+				nValid += valid;
+			}
 			break;
-        }
+		}
 
-        if (!valid) return 0;
-    }
-    return (!nValid ? -1 : nValid);
+		if (!valid) return 0;
+	}
+	return (!nValid ? -1 : nValid);
 }
 
 
@@ -197,50 +197,50 @@ map<int, int>* CSP::solve() {
 	start = clock();
 
 	// On initialise et trie le tableau des domaines;
-    vector<int> order;
-    for (int i = 0; i < nbVars; i++)
-        order.push_back(i);
+	vector<int> order;
+	for (int i = 0; i < nbVars; i++)
+		order.push_back(i);
 	sort(order.begin(), order.end(), [this](int l, int r) {return sortOrder(l, r); });
 
 	// Pas de récursivité... mais une pile.
-    vector<map<int, int>* > pile;
-    pile.push_back(new map<int, int>);
+	vector<map<int, int>* > pile;
+	pile.push_back(new map<int, int>);
 
-    map<int, int>* current;
+	map<int, int>* current;
 
-    while (pile.size()) {
+	while (pile.size()) {
 		current = pile[pile.size() - 1];
 		pile.erase(pile.begin() + pile.size() - 1);
 
 		// Pour tout les enfants de l'état courant;
-        for (int i = 0; i < vars[order[current->size()]].size(); i++)
-        {
+		for (int i = 0; i < vars[order[current->size()]].size(); i++)
+		{
 			totalNodes++;
 
 			// On crée l'état enfant (donc l'affectation);
-            map<int, int>* t = new map<int, int>(*current);
-            (*t)[order[current->size()]] = vars[order[current->size()]][i];
+			map<int, int>* t = new map<int, int>(*current);
+			(*t)[order[current->size()]] = vars[order[current->size()]][i];
 
 			// On teste les contraintes sur l'état enfant;
-            int r = isValid(*t);
+			int r = isValid(*t);
 
 			// Toute les contraintes sont respectées, SOLUTION!!
 			if (r == nbConstraints) {
 				duration = (clock() - start) / (double)CLOCKS_PER_SEC;
 				return t;
 			}
-            if (r != 0) 
+			if (r != 0)
 				pile.push_back(t); 			// Aucun test faux, on ajoute l'état à la pile!
 			if (r == 0) {					// Un test faux, l'état est à jeter.
 				branchesIgnorees++;
 				delete t;
 			}
-        }
-        delete current;
-    }
+		}
+		delete current;
+	}
 
 	duration = (clock() - start) / (double)CLOCKS_PER_SEC;
-    return new map<int, int>;
+	return new map<int, int>;
 }
 
 /* Fonction de résolution par réduction de domaine */
@@ -262,7 +262,7 @@ map<int, int>* CSP::solve2() {
 	Node* current;
 
 	while (pile.size()) {
-		current = pile[pile.size() -1];
+		current = pile[pile.size() - 1];
 		pile.erase(pile.begin() + pile.size() - 1);
 
 		/* Pour tout les enfants des sous domaine de l'état courrant */
@@ -282,7 +282,7 @@ map<int, int>* CSP::solve2() {
 			t->domains = domainReduction(t->domains, var, value);
 
 			if (t->assigned->size() == nbVars) {				// Toutes les variables sont là, grâce à la réduction de domaine, pas besoin de tester, c'est une solution!
-				duration = (clock() - start) / (double)CLOCKS_PER_SEC;				
+				duration = (clock() - start) / (double)CLOCKS_PER_SEC;
 				return t->assigned;
 			}
 			else if (t->domains.size() == 0) {				// Les domaines sont vides!
@@ -316,7 +316,7 @@ void CSP::displayDebug() {
 			cout << "X" << constraints[i][1] << " " << rInfo[constraints[i][0] - 1] << " X" << constraints[i][2] << endl;
 		}
 		else if (constraints[i][0] == 9) {
-			for (int y = 2; y < constraints[i].size(); y++) 
+			for (int y = 2; y < constraints[i].size(); y++)
 				cout << "X" << constraints[i][y] << (y == constraints[i].size() - 1 ? "" : " + ");
 			cout << " = X" << constraints[i][1] << endl;
 		}
