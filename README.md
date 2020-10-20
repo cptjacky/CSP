@@ -1,4 +1,3 @@
 # CSP
 Constraint Satisfaction Problem
 
-
